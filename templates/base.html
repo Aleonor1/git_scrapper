@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Git Crawler</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="{% static "css/style.css" %}">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+</head>
+<body>
+<nav>
+    <div class="container nav-wrapperr">
+        <a href="/" class="brand-logo">Git Repositories Crawler</a>
+        <ul id="nav-mobile" class="right">
+            <li><a href="/">Home</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <h1 style="text-align: center">What do you want to search</h1>
+    <div class="row">
+        <div class="col s4">
+            <div class="center">
+                <i class="large material-icons" style="color: #EE6E73">flash_on</i>
+                <p>Fastest repository scarper</p>
+                <p class="light center">Scrape away right here with a beautiful GUI</p>
+            </div>
+        </div>
+
+        <div class="col s4">
+            <div class="center">
+                <i class="large material-icons" style="color: orange">camera</i>
+                <p>Filter your searches</p>
+                <p class="light center">We built in functionality yo filter based on popularity</p>
+            </div>
+        </div>
+
+        <div class="col s4">
+            <div class="center">
+                <i class="large material-icons" style="color: blue"> chrome_reader_mode</i>
+                <p>A lot of content where you can search</p>
+                <p class="light center">Made for programmers by programmers</p>
+            </div>
+
+        </div>
+
+
+    </div>
+
+      <nav>
+    <div class="nav-wrapper">
+            <form action="{% url 'newSearch' %}" method="post">
+                {% csrf_token %}
+        <div class="input-field">
+          <input id="search" type="search" name="search" placeholder="search" required>
+          <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+          <i class="material-icons">close</i>
+        </div>
+      </form>
+    </div>
+  </nav>
+
+    {% block content %}
+
+    {% endblock content%}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
+</body>
+</html>
