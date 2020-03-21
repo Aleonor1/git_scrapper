@@ -38,7 +38,7 @@ def newSearch(request):
         data = response.text
 
         soup = BeautifulSoup(data, features='html.parser')
-
+#
 
         postListings = soup.find_all('li', {'class': 'repo-list-item hx_hit-repo d-flex flex-justify-start py-4 public source'})
         repoesQue = soup.find_all('div', {'class': 'd-flex flex-column flex-md-row flex-justify-between border-bottom pb-3 position-relative'})
