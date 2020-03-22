@@ -7,7 +7,7 @@
         {% for post in finalData %}
             <div class="col s4">
                 <div class="card">
-                    <div class="card-content">
+                    <div class="card-content style:center">
                          <p><i class="material-icons dp48">collections_bookmark</i>{{ post.1 }} | {{post.0}}</p>
                     </div>
                     <div class="card-action">
@@ -17,7 +17,6 @@
                         <p>Language: {{post.5}}</p>
                         <div class="icon preview s4 style: center">
                                             {% csrf_token %}
-
                             <a href={{post.6}}>
                         <i class="medium material-icons ">link</i>
                             </a>

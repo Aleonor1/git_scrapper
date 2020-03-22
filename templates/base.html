@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
 </head>
 <body>
-<nav>
+<nav style=" background-color: rgb(57, 119, 203);">
     <div class="container nav-wrapperr">
         <a href="/" class="brand-logo">Git Repositories Crawler</a>
         <ul id="nav-mobile" class="right">
@@ -46,27 +46,27 @@
             </div>
 
         </div>
-
-
     </div>
 
-      <nav>
-    <div class="nav-wrapper">
+    <nav style=" background-color: rgb(57, 119, 203);">
+        <div class="nav-wrapper">
             <form action="{% url 'newSearch' %}" method="post">
                 {% csrf_token %}
-        <div class="input-field">
-          <input id="search" type="search" name="search" placeholder="search" required>
-          <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-          <i class="material-icons">close</i>
+                <div class="input-field">
+                    <input id="search" type="search" name="search" placeholder="search" required>
+                    <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                    <i class="material-icons">close</i>
+                </div>
+            </form>
         </div>
-      </form>
-    </div>
-  </nav>
+    </nav>
 
     {% block content %}
 
     {% endblock content%}
-
+</div>
+    {%include 'parts/footer.html'%}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
 </body>
+
 </html>
