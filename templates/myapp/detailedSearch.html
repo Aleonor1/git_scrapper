@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>What do you want to search</h2>
+
+    <nav style=" background-color: rgb(57, 119, 203);">
+        <div class="nav-wrapper">
+            <form action="{% url 'detailedSearch' %}" method="post">
+                {% csrf_token %}
+                <div class="input-field">
+                    <input id="actualSearch" type="search" name="actualSearch" placeholder="Enter topics" required>
+                    <select class="browser-default" name="dropDown">
+                        <option value="" disabled selected>Choose your option</option>
+                        <option value="Java">Java</option>
+                        <option value="Jupyter Notebook">Jupyter Notebook</option>
+                        <option value="Python">Python</option>
+                        <option value="C++">C++</option>
+                        <option value="JavaScript">JavaScript</option>
+                        <option value="C#">C#</option>
+                        <option value="MATLAB">MATLAB</option>
+                        <option value="GO">GO</option>
+                        <option value="C">C</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </nav>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
+</div>
+{% endblock content %}
