@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import requests
 from requests.compat import quote_plus
 from . import models
+from .models import RegisterForm
+
 
 
 GITHUB_SEARCH_URL = 'https://github.com/search?q={}'
@@ -145,3 +147,18 @@ def detailedSearch(request):
     }
     return render(request, 'myapp/newSearch.html', stuffForFronted)
 
+
+def login(request):
+    return render(request, 'login.html', name="login")
+
+def register(response):
+    if response.method == "POST":
+        form = RegisterForm(response.POST)
+        if form.is_valid():
+            form.save()
+
+        return render(response, 'homeView.html')
+    else:
+        form = RegisterForm()
+
+    return render(response, "registration/register.html", {"form":form})
