@@ -75,7 +75,10 @@ def newSearch(request):
     return render(request, 'myapp/newSearch.html', stuffForFronted)
 
 def detailedSearchView(request):
-    return render(request, 'myapp/detailedSearch.html')
+    if 'actualSearch' in request.POST:
+        return detailedSearch(request)
+    else:
+        return render(request, 'myapp/detailedSearch.html')
 
 def detailedSearch(request):
     search = request.POST.get('actualSearch')

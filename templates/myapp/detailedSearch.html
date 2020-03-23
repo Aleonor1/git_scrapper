@@ -6,7 +6,7 @@
 
     <nav style=" background-color: rgb(57, 119, 203);">
         <div class="nav-wrapper">
-            <form action="{% url 'detailedSearch' %}" method="post">
+            <form action="{% url 'detailedSearchView' %}" method="POST">
                 {% csrf_token %}
                 <div class="input-field">
                     <input id="actualSearch" type="search" name="actualSearch" placeholder="Enter topics" required>
@@ -22,8 +22,10 @@
                         <option value="GO">GO</option>
                         <option value="C">C</option>
                     </select>
+                    <center>
                 </div>
             </form>
+
         </div>
     </nav>
 
