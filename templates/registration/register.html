@@ -7,7 +7,9 @@
     <div class="container">
     <form method="POST" class="form-group">
 	{% csrf_token %}
-	{{ form|crispy }}
+        <p></p>
+        <center>{{ form|crispy }}
 	<button type="submit" class="btn btn-success">Register</button>
+            </center>
     </form></div>
 {% endblock %}

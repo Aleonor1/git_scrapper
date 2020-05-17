@@ -10,4 +10,6 @@ urlpatterns = [
     path('detailed_search', views.detailedSearchView, name='detailedSearchView'),
     path('accounts/', include('django.contrib.auth.urls')),
     path("register", views.register, name="register"),
+    path('subscribe', views.notificationView, name ='send'),
+    path('subscribed', views.subscribed, name = 'subscribed'),
 ]

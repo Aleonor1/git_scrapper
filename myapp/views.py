@@ -4,6 +4,8 @@ import requests
 from requests.compat import quote_plus
 from . import models
 from .models import RegisterForm
+from django.core.mail import send_mail
+from git_scrapper import settings
 
 
 
@@ -14,12 +16,22 @@ GITHUB_REPO_URL ='https://github.com'
 def homeView(request):
     return render(request, 'homeView.html')
 
+
+def sendMail(message):
+    subject = 'GitScrapper New Topic'
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = ['aleonornyikita@gmail.com', ]
+    send_mail(subject, message, email_from, recipient_list)
+
+
 def newSearch(request):
     search = request.POST.get('search')
-    models.Search.objects.create(search=search)
+    current_user = request.user
+    models.Search.objects.create(search=search, user=current_user)
     final_url = GITHUB_SEARCH_URL.format(quote_plus(search))
     response = requests.get(final_url)
     data = response.text
+
 
     soup = BeautifulSoup(data, features='html.parser')
     postListings = soup.find_all('li', {'class': 'repo-list-item hx_hit-repo d-flex flex-justify-start py-4 public source'})
@@ -35,13 +47,10 @@ def newSearch(request):
 
     finalData = []
     for i in range(0,intNumberOfPages):
-        UrlWithPages = GITHUB_MULTIPLE_PAGES_SEARCH_URL + str(i).format((quote_plus(search)))
-        response = requests.get(final_url)
+        UrlWithPages = GITHUB_REPO_URL + '/search?q=' + search + '&p=' + str(i) + '& type = Repositories'
+        response = requests.get(UrlWithPages)
         data = response.text
-
         soup = BeautifulSoup(data, features='html.parser')
-#
-
         postListings = soup.find_all('li', {'class': 'repo-list-item hx_hit-repo d-flex flex-justify-start py-4 public source'})
         repoesQue = soup.find_all('div', {'class': 'd-flex flex-column flex-md-row flex-justify-between border-bottom pb-3 position-relative'})
 
@@ -53,9 +62,11 @@ def newSearch(request):
             tag = post.find_all('a',{'class':'topic-tag topic-tag-link f6 px-2 mx-0'})
             link = post.find_all()
             tagList=""
-            for tags in tag:
-                tagList+=tags.text+','
-
+            if (len(tag)!=0):
+                for tags in tag:
+                    tagList+=tags.text+','
+            else:
+                tagList ='N/A'
             starsQueyy = post.find_all('a',{'class':'muted-link'})
             watchers=""
             for fot in starsQueyy:
@@ -72,28 +83,34 @@ def newSearch(request):
 
     stuffForFronted = {
         'search': search,
-        'finalData': finalData,
+        'finalData': set(finalData),
     }
     return render(request, 'myapp/newSearch.html', stuffForFronted)
 
 def detailedSearchView(request):
-    if 'actualSearch' in request.POST:
+    if 'actualSearch' in request.GET:
         return detailedSearch(request)
     else:
         return render(request, 'myapp/detailedSearch.html')
 
+def subscribed(request):
+    print(request.GET.get('tools'))
+    print(request.GET.get('booking'))
+    return render(request, 'notification.html')
+
+def notificationView(request):
+    return render(request, 'notification.html')
+
 def detailedSearch(request):
-    search = request.POST.get('actualSearch')
-    selectedProgrammingLanguage = request.POST.get('dropDown')
+    search = request.GET.get('actualSearch')
+    selectedProgrammingLanguage = request.GET.get('tools')
     final_url = GITHUB_SEARCH_URL.format(quote_plus(search))
     response = requests.get(final_url)
     data = response.text
-
     soup = BeautifulSoup(data, features='html.parser')
     postListings = soup.find_all('li',{'class': 'repo-list-item hx_hit-repo d-flex flex-justify-start py-4 public source'})
     repoesQue = soup.find_all('div', {
         'class': 'd-flex flex-column flex-md-row flex-justify-between border-bottom pb-3 position-relative'})
-
     count = "";
     index = 0;
     for repo in repoesQue:
@@ -124,8 +141,11 @@ def detailedSearch(request):
             tag = post.find_all('a', {'class': 'topic-tag topic-tag-link f6 px-2 mx-0'})
             link = post.find_all()
             tagList = ""
-            for tags in tag:
-                tagList += tags.text + ','
+            if (len(tag) != 0):
+                for tags in tag:
+                    tagList += tags.text + ','
+            else:
+                tagList = 'N/A'
 
             starsQueyy = post.find_all('a', {'class': 'muted-link'})
             watchers = ""
@@ -147,7 +167,6 @@ def detailedSearch(request):
     }
     return render(request, 'myapp/newSearch.html', stuffForFronted)
 
-
 def login(request):
     return render(request, 'login.html', name="login")
 
@@ -162,3 +181,12 @@ def register(response):
         form = RegisterForm()
 
     return render(response, "registration/register.html", {"form":form})
+
+def homepage(request):
+    return render(request, 'home.html')
+
+
+def sentvalue(request):
+    value1 = request.GET['nameradio']
+    print(request)
+    return render(request, 'value.html', {'value2': value1, })
