@@ -6,16 +6,62 @@ from . import models
 from .models import RegisterForm
 from django.core.mail import send_mail
 from git_scrapper import settings
-
+from gitsuggest import GitSuggest
 
 
 GITHUB_SEARCH_URL = 'https://github.com/search?q={}'
 GITHUB_MULTIPLE_PAGES_SEARCH_URL = 'https://github.com/search?'
-GITHUB_REPO_URL ='https://github.com'
+GITHUB_REPO_URL ='https://github.com/'
+
 
 def homeView(request):
     return render(request, 'homeView.html')
 
+def recommand(request):
+    finalData = []
+
+    if 'search' in request.POST:
+        githubUser=request.POST.get('search')
+        gs = GitSuggest(username=githubUser)
+        for data in gs.get_suggested_repositories():
+            repo=data.full_name
+            final_url = GITHUB_REPO_URL + repo
+            response = requests.get(final_url)
+            data = response.text
+
+            soup = BeautifulSoup(data, features='html.parser')
+
+            stars = soup.find(class_='social-count js-social-count').text
+            description = soup.find(class_='text-gray-dark mr-2').text
+            tag = soup.find_all('a',{'class':'topic-tag topic-tag-link'})
+
+            tagList = ""
+            if (len(tag) != 0):
+                for tags in tag:
+                    tagList += tags.text + ','
+            else:
+                tagList = 'N/A'
+
+            user = repo.split('/')[0]
+            projectName = repo.split('/')[0]
+
+
+            finalData.append((projectName,user,description,stars,tagList))
+
+        stuffForFronted = {
+            'search': githubUser,
+            'finalData': set(finalData),
+        }
+        return render(request, 'myapp/recommandation.html', stuffForFronted)
+    else:
+        return render(request, 'myapp/recommand.html')
+
+
+
+def rec(request):
+    gs = GitSuggest(username='Aleonor1')
+    print(gs.get_suggested_repositories())
+    return render(request, 'homeView.html')
 
 def sendMail(message):
     subject = 'GitScrapper New Topic'
@@ -28,6 +74,7 @@ def newSearch(request):
     search = request.POST.get('search')
     current_user = request.user
     models.Search.objects.create(search=search, user=current_user)
+
     final_url = GITHUB_SEARCH_URL.format(quote_plus(search))
     response = requests.get(final_url)
     data = response.text
@@ -60,7 +107,6 @@ def newSearch(request):
             repositoryName = post.find('a').get('href')[1:].split('/')[1]
             description = post.find(class_ = 'mb-1').text
             tag = post.find_all('a',{'class':'topic-tag topic-tag-link f6 px-2 mx-0'})
-            link = post.find_all()
             tagList=""
             if (len(tag)!=0):
                 for tags in tag:

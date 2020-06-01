@@ -12,4 +12,6 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path('subscribe', views.notificationView, name ='send'),
     path('subscribed', views.subscribed, name = 'subscribed'),
+    path('recommand', views.recommand, name='recommand'),
+
 ]
