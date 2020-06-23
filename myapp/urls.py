@@ -10,7 +10,7 @@ urlpatterns = [
     path('detailed_search', views.detailedSearchView, name='detailedSearchView'),
     path('accounts/', include('django.contrib.auth.urls')),
     path("register", views.register, name="register"),
-    path('subscribe', views.notificationView, name ='send'),
+    path('subscribe/', views.notificationView, name ='subscribe'),
     path('subscribed', views.subscribed, name = 'subscribed'),
     path('recommand', views.recommand, name='recommand'),
 

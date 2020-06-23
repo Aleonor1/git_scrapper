@@ -7,6 +7,7 @@ from .models import RegisterForm
 from django.core.mail import send_mail
 from git_scrapper import settings
 from gitsuggest import GitSuggest
+from django.db.models import Count
 
 
 GITHUB_SEARCH_URL = 'https://github.com/search?q={}'
@@ -51,17 +52,12 @@ def recommand(request):
         stuffForFronted = {
             'search': githubUser,
             'finalData': set(finalData),
+            'totalData': set(finalData).__sizeof__(),
         }
         return render(request, 'myapp/recommandation.html', stuffForFronted)
     else:
         return render(request, 'myapp/recommand.html')
 
-
-
-def rec(request):
-    gs = GitSuggest(username='Aleonor1')
-    print(gs.get_suggested_repositories())
-    return render(request, 'homeView.html')
 
 def sendMail(message):
     subject = 'GitScrapper New Topic'
@@ -71,9 +67,17 @@ def sendMail(message):
 
 
 def newSearch(request):
-    search = request.POST.get('search')
+    searchText = request.POST.get('search')
+    search = searchText
     current_user = request.user
-    models.Search.objects.create(search=search, user=current_user)
+    if models.Search.objects.filter(search=request.POST.get('search')).exists():
+        t = models.Search.objects.get(search=searchText)
+        t.count += 1
+        t.save()
+    else:
+        models.Search.objects.create(search=search, user=current_user)
+
+    print(models.Search.objects.order_by('count')[:5])
 
     final_url = GITHUB_SEARCH_URL.format(quote_plus(search))
     response = requests.get(final_url)
@@ -90,8 +94,13 @@ def newSearch(request):
         count =repo.text
         break
     numberOfQues = count.split(' ')
-    intNumberOfPages = int(int(numberOfQues[4].replace(',',''))/10)
-
+#    intNumberOfPages = int(int(numberOfQues[4].replace(',',''))/10)
+    intNumberOfPages = 10
+    container = soup.find("div", attrs={'class': 'd-md-flex flex-items-start flex-auto'})
+    if (container!= None):
+        definitie = container.find("p").text
+    else:
+        definitie = None
     finalData = []
     for i in range(0,intNumberOfPages):
         UrlWithPages = GITHUB_REPO_URL + '/search?q=' + search + '&p=' + str(i) + '& type = Repositories'
@@ -130,6 +139,7 @@ def newSearch(request):
     stuffForFronted = {
         'search': search,
         'finalData': set(finalData),
+        'def': definitie,
     }
     return render(request, 'myapp/newSearch.html', stuffForFronted)
 
@@ -140,9 +150,8 @@ def detailedSearchView(request):
         return render(request, 'myapp/detailedSearch.html')
 
 def subscribed(request):
-    print(request.GET.get('tools'))
-    print(request.GET.get('booking'))
-    return render(request, 'notification.html')
+    sendMail("new repo")
+    return render(request, 'myapp/subscribed.html')
 
 def notificationView(request):
     return render(request, 'notification.html')
@@ -163,8 +172,13 @@ def detailedSearch(request):
         count = repo.text
         break
     numberOfQues = count.split(' ')
-    intNumberOfPages = int(int(numberOfQues[4].replace(',', '')) / 10)
-
+    #intNumberOfPages = int(int(numberOfQues[4].replace(',', '')) / 10)
+    intNumberOfPages = 10
+    container = soup.find("div", attrs={'class': 'd-md-flex flex-items-start flex-auto'})
+    if (container != None):
+        definitie = container.find("p").text
+    else:
+        definitie = None
     finalData = []
     for i in range(0, intNumberOfPages):
         UrlWithPages = GITHUB_MULTIPLE_PAGES_SEARCH_URL + str(i).format((quote_plus(search)))
@@ -210,6 +224,7 @@ def detailedSearch(request):
     stuffForFronted = {
         'search': search,
         'finalData': finalData,
+        'def': definitie,
     }
     return render(request, 'myapp/newSearch.html', stuffForFronted)
 

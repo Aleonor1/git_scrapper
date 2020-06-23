@@ -4,6 +4,10 @@
     overflow: hidden;
 }
 
+.p {
+    color:white;
+}
+
 .card-image {
     height: 250px; /* Your height here */
     overflow: hidden;

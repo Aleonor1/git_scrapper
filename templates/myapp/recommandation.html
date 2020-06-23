@@ -2,11 +2,13 @@
 
 {% block content %}
 <div class="container">
-    <h2 style="text-align: center">{{ search | title }}</h2>
+    <h2 style="text-align: center; color: white;">Recommendations for {{ search | title }}</h2>
+    <h2 style="text-align: center; color: white;">Total number {{ totalData | title }}</h2>
+
     <div class="row">
         {% for post in finalData %}
             <div class="col s4">
-                <div class="card">
+                <div class="card" style="background-color: #e1ed2f">
                     <div class="card-content style:center">
                          <p><i class="material-icons dp48">collections_bookmark</i>{{ post.0 }} | {{post.1}}</p>
                     </div>

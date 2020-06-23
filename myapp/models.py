@@ -8,7 +8,7 @@ class Search (models.Model):
     search = models.CharField(max_length=500)
     user = models.CharField(max_length=500, null=True)
     created = models.DateTimeField(auto_now=True)
-
+    count = models.IntegerField(default=0)
     def __str__(self):
         return '{}'.format(self.search)
 
@@ -20,4 +20,4 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
+        fields = ["username", "email", "first_name","password1", "password2"]

@@ -1,20 +1,22 @@
 {% load static %}
-<div>
-    <nav style=" background-color: rgb(57, 119, 203);">
-        <div class="container nav-wrapperr">
+
+
+<nav style=" background-color: rgb(57, 119, 203);">
+    <div class="container nav-wrapperr">
+        <a href="/" class="brand-logo">ReaderNoRe <a>
             <ul id="nav-mobile" class="right">
                 <li><a href="/">Home</a></li>
                 <li><a href="/detailed_search">Detailed Search</a></li>
-                <li><a href="/subscribe">Subscribe</a></li>
-                {%if user.is_authenticated %} Welcome {{ user.username }}!
+                {%if user.is_authenticated %}
+                Welcome {{ user.username }}!
                 <li><a href="{% url 'logout' %}">Logout</a></li>
                 <li><a href="/recommand">Recommandations</a></li>
-
+                <li><a href="/subscribe">Notification</a></li>
                 {% else %}
                 <li><a href="{% url 'login' %}">Login</a></li>
                 <li><a href="{%url 'register' %}">Sign up</a></li>
+
                 {% endif %}
             </ul>
-        </div>
-    </nav>
-</div>
+    </div>
+</nav>
